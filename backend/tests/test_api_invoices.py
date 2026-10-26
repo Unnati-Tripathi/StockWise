@@ -32,6 +32,8 @@ def test_upload_invoice_endpoint(client, db_session):
     inv = get_res.json()
     
     assert inv["status"] in ["NEEDS_REVIEW", "FAILED", "PROCESSING", "UPLOADED"]
+    assert "extraction_provider" in inv
+    assert "extraction_confidence" in inv
 
 def test_get_invoices(client):
     response = client.get("/api/v1/invoices/")

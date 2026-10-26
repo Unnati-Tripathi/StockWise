@@ -1,9 +1,9 @@
 from datetime import datetime, date
-from typing import Optional, List
+from typing import Optional, List, Any
 from decimal import Decimal
 import enum
 
-from sqlalchemy import String, Integer, DateTime, Date, Numeric, ForeignKey, func, Enum
+from sqlalchemy import String, Integer, DateTime, Date, Numeric, ForeignKey, func, Enum, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base
 
@@ -34,6 +34,11 @@ class Invoice(Base):
     file_path: Mapped[str] = mapped_column(String(500), nullable=False)
     error_message: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
     
+    # AI extraction audit and traceability fields (Phase 4)
+    extraction_provider: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    raw_extraction_json: Mapped[Optional[Any]] = mapped_column(JSON, nullable=True)
+    extraction_confidence: Mapped[Optional[Decimal]] = mapped_column(Numeric(4, 3), nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 

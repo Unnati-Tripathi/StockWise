@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { assistantApi } from '../api';
-import { Send, Bot, User, Code, FileText, ChevronRight, ChevronDown } from 'lucide-react';
+import { Send, Bot, User, Code, FileText, ChevronRight, ChevronDown, Wrench, Database, AlertTriangle } from 'lucide-react';
 
 const Assistant = () => {
   const [messages, setMessages] = useState([
@@ -44,7 +44,11 @@ const Assistant = () => {
         { 
           role: 'assistant', 
           content: response.reply,
-          evidence: response.evidence 
+          evidence: response.evidence,
+          tools_used: response.tools_used || [],
+          sources: response.sources || [],
+          warnings: response.warnings || [],
+          data_freshness: response.data_freshness,
         }
       ]);
     } catch (err) {
@@ -140,6 +144,53 @@ const Assistant = () => {
                   boxShadow: msg.role === 'user' ? 'none' : '0 1px 3px rgba(0,0,0,0.05)'
                 }}>
                   <div style={{ lineHeight: '1.5' }}>{msg.content}</div>
+
+                  {/* Tools Used Chips */}
+                  {msg.tools_used && msg.tools_used.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '0.75rem' }}>
+                      {msg.tools_used.map((t, tidx) => (
+                        <span 
+                          key={tidx} 
+                          className="badge" 
+                          style={{ 
+                            fontSize: '0.725rem', 
+                            display: 'inline-flex', 
+                            alignItems: 'center', 
+                            gap: '4px',
+                            background: '#e0e7ff',
+                            color: '#3730a3',
+                            border: 'none',
+                            padding: '3px 8px'
+                          }}
+                          title={JSON.stringify(t.arguments || {})}
+                        >
+                          <Wrench size={11} /> 
+                          {t.tool_name}{t.result_count > 0 ? ` (${t.result_count})` : ''}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Sources References Panel */}
+                  {msg.sources && msg.sources.length > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px', marginTop: '0.5rem', fontSize: '0.725rem', color: '#64748b' }}>
+                      <Database size={11} />
+                      <span style={{ fontWeight: 600 }}>Sources:</span>
+                      {msg.sources.map((s, sidx) => (
+                        <span key={sidx} style={{ background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', border: '1px solid #cbd5e1' }}>
+                          {s.reference}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Warnings Display */}
+                  {msg.warnings && msg.warnings.length > 0 && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.5rem 0.75rem', background: '#fffbeb', border: '1px solid #fef3c7', borderRadius: '0.375rem', fontSize: '0.75rem', color: '#b45309', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <AlertTriangle size={13} />
+                      <span>{msg.warnings.join(' | ')}</span>
+                    </div>
+                  )}
                   
                   {msg.evidence && <EvidenceBlock evidence={msg.evidence} />}
                 </div>

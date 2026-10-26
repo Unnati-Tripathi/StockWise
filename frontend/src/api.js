@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 export async function fetchApi(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
@@ -75,4 +75,30 @@ export const assistantApi = {
     method: 'POST',
     body: JSON.stringify({ query, session_history: sessionHistory })
   })
+};
+
+export const documentsApi = {
+  upload: async (file, title = '', docType = 'supplier_policy') => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (title) formData.append('title', title);
+    if (docType) formData.append('doc_type', docType);
+
+    const response = await fetch(`${API_BASE}/documents/`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Document upload failed');
+    }
+    return response.json();
+  },
+  list: (skip = 0, limit = 50) => fetchApi(`/documents/?skip=${skip}&limit=${limit}`),
+  get: (id) => fetchApi(`/documents/${id}`),
+  delete: (id) => fetchApi(`/documents/${id}`, { method: 'DELETE' }),
+  search: (query, topK = 5) => fetchApi('/documents/search', {
+    method: 'POST',
+    body: JSON.stringify({ query, top_k: topK })
+  }),
 };

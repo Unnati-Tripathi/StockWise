@@ -8,6 +8,7 @@ import StockMovements from './pages/StockMovements';
 
 import Invoices from './pages/Invoices';
 import Assistant from './pages/Assistant';
+import Documents from './pages/Documents';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="movements" element={<StockMovements />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="assistant" element={<Assistant />} />
+          <Route path="documents" element={<Documents />} />
         </Route>
       </Routes>
     </BrowserRouter>

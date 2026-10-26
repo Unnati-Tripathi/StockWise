@@ -9,6 +9,7 @@ from .demo import router as demo_router
 from .replenishment import router as replenishment_router
 from .invoices import router as invoices_router
 from .assistant import router as assistant_router
+from .documents import router as documents_router
 
 router = APIRouter()
 router.include_router(health_router, tags=["Health"])
@@ -18,4 +19,5 @@ router.include_router(inventory_router, prefix="/inventory", tags=["Inventory"])
 router.include_router(replenishment_router, prefix="/replenishment", tags=["Replenishment"])
 router.include_router(invoices_router, prefix="/invoices", tags=["Invoices"])
 router.include_router(assistant_router, prefix="/assistant", tags=["Assistant"])
+router.include_router(documents_router, prefix="/documents", tags=["Documents"])
 router.include_router(demo_router, prefix="/demo", tags=["Demo"])

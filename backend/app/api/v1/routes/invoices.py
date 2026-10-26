@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from typing import List
 
+from app.core.security import validate_uploaded_file
 from app.db.session import get_db
 from app.models.invoice import Invoice, InvoiceLineItem, InvoiceProcessingStatus
 from app.schemas.invoice import InvoiceUploadResponse, InvoiceResponse, InvoiceLineItemUpdate
@@ -25,16 +26,11 @@ async def upload_invoice(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    # Validate file extension
-    import os
-    ext = os.path.splitext(file.filename)[1].lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise HTTPException(status_code=400, detail="Invalid file type. Only PDF and images are supported.")
-        
-    # Read file size
     contents = await file.read()
-    if len(contents) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="File too large. Max 5MB.")
+    try:
+        validate_uploaded_file(file.filename or "", contents, set(ALLOWED_EXTENSIONS), MAX_FILE_SIZE)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid file type: {exc}")
     
     # Reset cursor for saving
     await file.seek(0)

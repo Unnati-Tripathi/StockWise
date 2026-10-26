@@ -1,0 +1,142 @@
+[
+  {
+    "id": "q01",
+    "question": "What medicines are at critical stockout risk?",
+    "expected_tool": "get_stockout_risks",
+    "expected_args": {"risk_level": "CRITICAL"},
+    "category": "risk"
+  },
+  {
+    "id": "q02",
+    "question": "Show me all high-risk medicines",
+    "expected_tool": "get_stockout_risks",
+    "expected_args": {"risk_level": "HIGH"},
+    "category": "risk"
+  },
+  {
+    "id": "q03",
+    "question": "Which batches expire within the next 30 days?",
+    "expected_tool": "get_expiring_batches",
+    "expected_args": {"days": 30},
+    "category": "expiry"
+  },
+  {
+    "id": "q04",
+    "question": "List all expired inventory batches",
+    "expected_tool": "get_expiring_batches",
+    "expected_args": {"days": 0},
+    "category": "expiry"
+  },
+  {
+    "id": "q05",
+    "question": "What is the current stock level for all medicines?",
+    "expected_tool": "get_inventory_status",
+    "expected_args": {},
+    "category": "inventory"
+  },
+  {
+    "id": "q06",
+    "question": "How much Amoxicillin do we have in stock?",
+    "expected_tool": "search_medicines",
+    "expected_args": {"query": "Amoxicillin"},
+    "category": "inventory"
+  },
+  {
+    "id": "q07",
+    "question": "Compare suppliers for Paracetamol",
+    "expected_tool": "get_supplier_information",
+    "expected_args": {},
+    "category": "supplier"
+  },
+  {
+    "id": "q08",
+    "question": "Which supplier has the shortest lead time?",
+    "expected_tool": "get_supplier_information",
+    "expected_args": {},
+    "category": "supplier"
+  },
+  {
+    "id": "q09",
+    "question": "Generate a replenishment proposal for critical items",
+    "expected_tool": "get_replenishment_recommendations",
+    "expected_args": {"risk_level": "CRITICAL"},
+    "category": "replenishment"
+  },
+  {
+    "id": "q10",
+    "question": "What should I reorder this week?",
+    "expected_tool": "get_replenishment_recommendations",
+    "expected_args": {},
+    "category": "replenishment"
+  },
+  {
+    "id": "q11",
+    "question": "Search supplier policies for cold storage requirements",
+    "expected_tool": "search_supplier_documents",
+    "expected_args": {"query": "cold storage"},
+    "category": "documents"
+  },
+  {
+    "id": "q12",
+    "question": "Find SOP documents about controlled substances",
+    "expected_tool": "search_supplier_documents",
+    "expected_args": {"query": "controlled substances"},
+    "category": "documents"
+  },
+  {
+    "id": "q13",
+    "question": "Which medicines are running low on stock?",
+    "expected_tool": "get_stockout_risks",
+    "expected_args": {},
+    "category": "risk"
+  },
+  {
+    "id": "q14",
+    "question": "Show inventory for medicine ID 1",
+    "expected_tool": "get_inventory_status",
+    "expected_args": {"medicine_id": 1},
+    "category": "inventory"
+  },
+  {
+    "id": "q15",
+    "question": "Search for antibiotics in our catalogue",
+    "expected_tool": "search_medicines",
+    "expected_args": {"query": "antibiotic"},
+    "category": "inventory"
+  },
+  {
+    "id": "q16",
+    "question": "What batches expire in the next 3 months?",
+    "expected_tool": "get_expiring_batches",
+    "expected_args": {"days": 90},
+    "category": "expiry"
+  },
+  {
+    "id": "q17",
+    "question": "List suppliers for all medicines",
+    "expected_tool": "get_supplier_information",
+    "expected_args": {},
+    "category": "supplier"
+  },
+  {
+    "id": "q18",
+    "question": "Draft purchase orders for high-risk items",
+    "expected_tool": "get_replenishment_recommendations",
+    "expected_args": {"risk_level": "HIGH"},
+    "category": "replenishment"
+  },
+  {
+    "id": "q19",
+    "question": "What medicines fall under the analgesics category?",
+    "expected_tool": "search_medicines",
+    "expected_args": {"query": "analgesic"},
+    "category": "inventory"
+  },
+  {
+    "id": "q20",
+    "question": "Check minimum order quantities for our suppliers",
+    "expected_tool": "get_supplier_information",
+    "expected_args": {},
+    "category": "supplier"
+  }
+]

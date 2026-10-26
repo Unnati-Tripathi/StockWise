@@ -25,14 +25,17 @@ def clear_existing_data(db):
     db.execute(text("DELETE FROM medicines"))
     db.commit()
 
-def seed():
+def seed(db=None):
     if settings.environment != "development":
         print("Error: Seed script can only be run in development environment.")
         return
 
     random.seed(42)  # Deterministic seed
 
-    db = SessionLocal()
+    should_close = False
+    if db is None:
+        db = SessionLocal()
+        should_close = True
     try:
         clear_existing_data(db)
 
@@ -150,8 +153,10 @@ def seed():
     except Exception as e:
         db.rollback()
         print(f"Error seeding data: {e}")
+        raise
     finally:
-        db.close()
+        if should_close:
+            db.close()
 
 if __name__ == "__main__":
     seed()

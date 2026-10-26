@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Package, RefreshCw, ArrowRightLeft, FileText, Bot } from 'lucide-react';
+import { LayoutDashboard, Package, RefreshCw, ArrowRightLeft, FileText, Bot, BookOpen } from 'lucide-react';
 
 const Layout = () => {
   return (
@@ -30,6 +30,10 @@ const Layout = () => {
           <NavLink to="/assistant" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             <Bot size={20} />
             Assistant (AI)
+          </NavLink>
+          <NavLink to="/documents" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            <BookOpen size={20} />
+            Documents (RAG)
           </NavLink>
           <NavLink to="/movements" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             <ArrowRightLeft size={20} />

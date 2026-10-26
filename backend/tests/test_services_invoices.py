@@ -129,3 +129,65 @@ def test_post_invoice_to_inventory(db_session):
     # Ensure repeated posting fails
     with pytest.raises(HTTPException):
         post_invoice_to_inventory(db_session, inv)
+
+
+def test_validate_invoice_arithmetic_mismatch(db_session):
+    med = Medicine(name="Test Med", code="TM-01", base_unit="box")
+    db_session.add(med)
+    db_session.commit()
+
+    inv = Invoice(
+        file_path="dummy.pdf",
+        status=InvoiceProcessingStatus.NEEDS_REVIEW,
+        total=Decimal("100.00"),
+        subtotal=Decimal("100.00"),
+    )
+    db_session.add(inv)
+    db_session.commit()
+
+    # Line item: 10 * 5.00 = 50.00, but total is 100.00
+    line = InvoiceLineItem(
+        invoice_id=inv.id,
+        medicine_id=med.id,
+        quantity=10,
+        unit_cost=Decimal("5.00"),
+        batch_number="B-1",
+        expiry_date=date(2030, 1, 1),
+    )
+    db_session.add(line)
+    db_session.commit()
+
+    is_valid = validate_invoice(db_session, inv)
+    assert is_valid is False
+    assert "Arithmetic mismatch" in inv.error_message
+
+
+def test_validate_invoice_low_confidence_flagged(db_session):
+    med = Medicine(name="Test Med", code="TM-01", base_unit="box")
+    db_session.add(med)
+    db_session.commit()
+
+    inv = Invoice(
+        file_path="dummy.pdf",
+        status=InvoiceProcessingStatus.NEEDS_REVIEW,
+        extraction_confidence=Decimal("0.55"),
+        total=Decimal("50.00"),
+    )
+    db_session.add(inv)
+    db_session.commit()
+
+    line = InvoiceLineItem(
+        invoice_id=inv.id,
+        medicine_id=med.id,
+        quantity=10,
+        unit_cost=Decimal("5.00"),
+        batch_number="B-1",
+        expiry_date=date(2030, 1, 1),
+    )
+    db_session.add(line)
+    db_session.commit()
+
+    is_valid = validate_invoice(db_session, inv)
+    assert is_valid is False
+    assert "Low extraction confidence" in inv.error_message
+

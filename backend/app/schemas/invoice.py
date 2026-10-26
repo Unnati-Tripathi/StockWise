@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import date, datetime
-from typing import Optional, List
+from typing import Optional, List, Any
 from decimal import Decimal
 from app.models.invoice import InvoiceProcessingStatus
 
@@ -22,6 +22,11 @@ class ExtractedInvoiceData(BaseModel):
     subtotal: Optional[Decimal] = None
     total: Optional[Decimal] = None
     line_items: List[ExtractedInvoiceLineItem] = []
+    # Traceability / audit fields (Phase 4)
+    confidence_score: Optional[float] = None        # 0.0–1.0; None = not reported
+    extraction_provider: Optional[str] = None       # "mock" | "gemini"
+    raw_extraction_result: Optional[str] = None     # raw JSON string from the model
+
 
 # API schemas
 class InvoiceUploadResponse(BaseModel):
@@ -55,6 +60,8 @@ class InvoiceResponse(BaseModel):
     total: Optional[Decimal] = None
     status: InvoiceProcessingStatus
     error_message: Optional[str] = None
+    extraction_provider: Optional[str] = None
+    extraction_confidence: Optional[Decimal] = None
     created_at: datetime
     updated_at: datetime
     line_items: List[InvoiceLineItemResponse] = []
